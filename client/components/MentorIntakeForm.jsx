@@ -45,7 +45,7 @@ export default class MentorIntakeForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log(events.target.value);
+    console.log(this.state);
   }
 
   renderOptions(value) {
@@ -75,6 +75,7 @@ export default class MentorIntakeForm extends React.Component {
         <Label>
           {displayName + ':'}
           <Input name={fieldName} type="select" value={this.state[fieldName]} onChange={this.handleChange}>
+            <option key="empty"></option>
             {options.map(this.renderOptions)}
           </Input>
         </Label>
@@ -162,8 +163,16 @@ export default class MentorIntakeForm extends React.Component {
       <div>
         <h3>Which of the following topics do you feel qualified to offer Raphael House scholars support with?</h3>
         <FormGroup key="goals" style={{marginLeft: 20}}>
-          {this.renderCheckBox('basic-professional-development', 'Basic Professional Development')}
-          {this.renderCheckBox('crimial-record-expungement', 'Criminal record expungement')}
+          {this.renderCheckBox('Basic professional development', 'basic-professional-development')}
+          {this.renderCheckBox('Criminal record expungement', 'crimial-record-expungement')}
+          {this.renderCheckBox('Basic computer skills', 'basic-computer-skills')}
+          {this.renderCheckBox('Resume building', 'resume-building')}
+          {this.renderCheckBox('Financial literacy counseling (increasing credit score)', 'financial-literacy-conseling')}
+          {this.renderCheckBox('Interview skills', 'interview-skills')}
+          {this.renderCheckBox('Completing technical degrees or certification programs', 'technical-degrees')}
+          {this.renderCheckBox('Acquiring GED', 'acquiring-ged')}
+          {this.renderCheckBox('English tutoring', 'english-tutoring')}
+          {this.renderCheckBox('Applying for 2 or 4 year University Programs', 'university-programs')}
         </FormGroup>
       </div>
     );
@@ -178,6 +187,7 @@ export default class MentorIntakeForm extends React.Component {
           {this.renderPersonalInformation()}
           {this.renderSkills()}
           {this.renderEmploymentHistory()}
+          <Button onSubmit={this.handleSubmit}>Submit</Button>
         </Form>
       </div>
     );
