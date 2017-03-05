@@ -9,10 +9,12 @@ export default class MenteeIntakeForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
+    this.renderCheckboxField = this.renderCheckboxField.bind(this);
     this.getArrayOfConsecutiveInts = this.getArrayOfConsecutiveInts.bind(this);
     this.renderPersonalInformation = this.renderPersonalInformation.bind(this);
     this.renderSelectInput = this.renderSelectInput.bind(this);
-    this.renderSkills = this.renderSkills.bind(this);
+    this.renderCheckboxInput = this.renderCheckboxInput.bind(this);
+    this.renderGoals = this.renderSkills.bind(this);
     this.renderEmploymentHistory = this.renderEmploymentHistory.bind(this);
   }
 
@@ -33,6 +35,15 @@ export default class MenteeIntakeForm extends React.Component {
     return (
       <option key={value}>{value}</option>
     );
+  }
+
+  renderCheckboxField(fieldName, field) {
+    return (
+      <div>
+        <Input name={fieldName + '[]'} type="checkbox" id={field.id} value={field.value} onChange={this.handleChange} />
+        <Label>{field.value}</Label>
+      </div>
+    )
   }
 
   getArrayOfConsecutiveInts(n) {
@@ -58,6 +69,19 @@ export default class MenteeIntakeForm extends React.Component {
           <Input name={fieldName} type="select" value={this.state[fieldName]} onChange={this.handleChange}>
             {options.map(this.renderOptions)}
           </Input>
+        </Label>
+      </FormGroup>
+    );
+  }
+
+  renderCheckboxInput(displayName, fieldName, fields) {
+    return (
+      <FormGroup key={fieldName}>
+        <Label>
+          {displayName + ':'}
+          {fields.map((field) => {
+            this.renderCheckboxField(fieldName, field);
+          })}
         </Label>
       </FormGroup>
     );
@@ -94,46 +118,51 @@ export default class MenteeIntakeForm extends React.Component {
         {this.renderTextInput('Phone Number', 'phone')}
         {this.renderTextInput('Email', 'email')}
         {this.renderTextInput('Mailing Address', 'address')}
+        {this.renderSelectInput('Program', 'program', ['Bridge', 'Residential Shelter'])}
+        {this.renderTextInput('Case Manager (residential only)', 'caseManager')}
       </div>
     );
   }
 
-  renderSkills() {
+  renderGoals() {
     return (
       <div>
-        <h1>Experience & Skills</h1>
-        {this.renderSelectInput('Are you currently employed?', 'isCurrentlyEmployed', ['Yes', 'No'])}
-        {this.renderTextInput('Occupation', 'occupation')}
-        {this.renderTextInput('Job Title', 'jobTitle')}
-        {this.renderTextInput('Highest level of education:', 'educationLevel')}
-        {this.renderSelectInput('Are you a student?', 'isStudent', ['Yes', 'No'])}
-        {this.renderTextInput('Name of School', 'currentSchool')}
-        {this.renderTextInput('Major', 'major')}
-        {this.renderSelectInput('Do you have any experience mentoring?', 'hasMentoringExperience', ['Yes', 'No'])}
-        {this.renderTextInput('If so, please describe', 'mentoringExperience')}
-        {this.renderSelectInput('Are you fluent in any language other than English?', 'fluentLanguages', [
-          'Spanish',
-          'Chinese',
-          'Tagalog',
-          'Viatnamese',
-          'Korean',
-          'Farsi Persian',
-          'Armenian',
-          'Russian',
-          'Arabic',
-          'Khmer',
-          'Cambodian',
-          'Others',
+        <h1>Goals</h1>
+        {this.renderCheckboxInput('Please indicate the reasons that you are seeking Career Development Services', 'goals', [
+          {
+            id: 'fullTime',
+            value: 'Acquire full-time employment'
+          },
+          {
+            id: 'partTime',
+            value: 'Acquire part-time employment'
+          },
+          {
+            id: 'income',
+            value: 'Increase income/hours'
+          },
+          {
+            id: 'career',
+            value: 'Change career path'
+          },
+          {
+            id: 'enrollUniversity',
+            value: 'Enroll in 2 or 4 year University Program'
+          },
+          {
+            id: 'enrollTechnical',
+            value: 'Enroll in technical degree or certification program'
+          },
+          {
+            id: 'barrier',
+            value: 'Overcome barrier to employment (Acquire GED, computer skills, English tutoring, interview skills, professional attire, resume building, criminal record expungement, improving credit)'
+          },
+          {
+            id: 'other',
+            value: 'Other (please specify)'
+          },
         ])}
-        {this.renderTextInput('If you chose others, please specify', 'otherFluentLanguages')}
-      </div>
-    );
-  }
-
-  renderEmploymentHistory() {
-    return (
-      <div>
-        <h3>Which of the following topics do you feel qualified to offer Raphael House scholars support with?</h3>
+        {this.renderTextInput('If you chose other, please specify', 'other')}
       </div>
     );
   }
@@ -144,8 +173,7 @@ export default class MenteeIntakeForm extends React.Component {
         <h1>Personal Information</h1>
         <Form onSubmit={this.handleSubmit}>
           {this.renderPersonalInformation()}
-          {this.renderSkills()}
-          {this.renderEmploymentHistory()}
+          {this.renderGoals()}
         </Form>
       </div>
     );
