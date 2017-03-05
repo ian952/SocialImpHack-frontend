@@ -6,7 +6,7 @@ import MatchList from 'components/MatchList.jsx';
 import MenteeIntakeForm from 'components/MenteeIntakeForm.jsx';
 import MenteeSignupForm from 'components/MenteeSignupForm.jsx';
 import MentorIntakeForm from 'components/MentorIntakeForm.jsx';
-import MentorSignUpForm from 'components/MentorSignUpForm.jsx';
+import MentorSignupForm from 'components/MentorSignupForm.jsx';
 import MainNav from 'components/MainNav.jsx';
 import UserProfile from 'components/UserProfile.jsx';
 import React from 'react';
