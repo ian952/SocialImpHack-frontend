@@ -9,21 +9,38 @@ export default class MenteeIntakeForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
-    this.renderCheckboxField = this.renderCheckboxField.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.getArrayOfConsecutiveInts = this.getArrayOfConsecutiveInts.bind(this);
     this.renderPersonalInformation = this.renderPersonalInformation.bind(this);
     this.renderSelectInput = this.renderSelectInput.bind(this);
-    this.renderCheckboxInput = this.renderCheckboxInput.bind(this);
     this.renderGoals = this.renderSkills.bind(this);
+    this.renderCheckBox = this.renderCheckBox.bind(this);
     this.renderEmploymentHistory = this.renderEmploymentHistory.bind(this);
   }
 
   handleChange(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.value;
     const name = target.name;
 
     this.setState({[name]: value});
+  }
+
+  handleCheckboxChange(event) {
+    const target = event.target;
+    const name = target.name;
+
+    this.setState((prevState) => {
+      const newState = prevState;
+      if (target.checked) {
+        newState.goals.push(name);
+        return newState;
+      } else {
+        const ind = newState.goals.indexOf(name);
+        newState.goals = newState.goals.splice(1, ind);
+        return newState;
+      }
+    });
   }
 
   handleSubmit(event) {
@@ -37,13 +54,12 @@ export default class MenteeIntakeForm extends React.Component {
     );
   }
 
-  renderCheckboxField(fieldName, field) {
+  renderCheckBox(displayName, fieldName) {
     return (
       <div>
-        <Input name={fieldName + '[]'} type="checkbox" id={field.id} value={field.value} onChange={this.handleChange} />
-        <Label>{field.value}</Label>
+        <Input type="checkbox" name={fieldName} onChange={this.handleCheckboxChange} />{displayName}
       </div>
-    )
+    );
   }
 
   getArrayOfConsecutiveInts(n) {
@@ -128,40 +144,15 @@ export default class MenteeIntakeForm extends React.Component {
     return (
       <div>
         <h1>Goals</h1>
-        {this.renderCheckboxInput('Please indicate the reasons that you are seeking Career Development Services', 'goals', [
-          {
-            id: 'fullTime',
-            value: 'Acquire full-time employment'
-          },
-          {
-            id: 'partTime',
-            value: 'Acquire part-time employment'
-          },
-          {
-            id: 'income',
-            value: 'Increase income/hours'
-          },
-          {
-            id: 'career',
-            value: 'Change career path'
-          },
-          {
-            id: 'enrollUniversity',
-            value: 'Enroll in 2 or 4 year University Program'
-          },
-          {
-            id: 'enrollTechnical',
-            value: 'Enroll in technical degree or certification program'
-          },
-          {
-            id: 'barrier',
-            value: 'Overcome barrier to employment (Acquire GED, computer skills, English tutoring, interview skills, professional attire, resume building, criminal record expungement, improving credit)'
-          },
-          {
-            id: 'other',
-            value: 'Other (please specify)'
-          },
-        ])}
+        <h3>Please indicate the reasons that you are seeking Career Development Services</h3>
+        {this.renderCheckBox('Acquire full-time employment', 'full-time')}
+        {this.renderCheckBox('Acquire part-time employment', 'part-time')}
+        {this.renderCheckBox('Increase income/hours', 'income')}
+        {this.renderCheckBox('Change career path', 'career')}
+        {this.renderCheckBox('Enroll in 2 or 4 year University Program', 'enroll-university')}
+        {this.renderCheckBox('Enroll in technical degree or certification program', 'enroll-technical')}
+        {this.renderCheckBox('Overcome barrier to employment (Acquire GED, computer skills, English tutoring, interview skills, professional attire, resume building, criminal record expungement, improving credit)', 'barrier')}
+        {this.renderCheckBox('Other (please specify)', 'other')}
         {this.renderTextInput('If you chose other, please specify', 'other')}
       </div>
     );
