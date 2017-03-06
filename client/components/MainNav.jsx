@@ -73,8 +73,8 @@ export default class MainNav extends React.Component {
     console.log('check!');
     this.setState({ loading: true });
     axios.get('/api/v1/auth').then((res) => {
-      // if (!res.authenticated) {
-      if (!res){
+      if (!res.authenticated) {
+      //if (!res){
         this.context.router.push('/login');
       } else {
         this.state.loggedIn = true;
@@ -99,7 +99,7 @@ export default class MainNav extends React.Component {
           <div className="container">
             <NavbarToggler right onClick={this.toggle} />
             <NavbarBrand href="http://www.raphaelhouse.org/">
-              <img style={{height: 75}} src="http://www.raphaelhouse.org/wp-content/themes/Raphael%20House/images/logo.png"/>
+              <img style={{height: 75}} src="client/img/rhlogo.png"/>
             </NavbarBrand>
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
