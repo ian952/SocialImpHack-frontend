@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'reactstrap';
 
 export default class SocialOAuthForm extends React.Component {
   static contextTypes = {
@@ -18,9 +19,9 @@ export default class SocialOAuthForm extends React.Component {
     return (
       <div className="col-sm-12 text-center">
         <a href={authLink}>
-          <button className="btn btn-large pointer">
+          <Button className="btn pointer" size="lg">
             Login with Google
-          </button>
+          </Button>
         </a>
       </div>
     );
