@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
@@ -17,6 +18,10 @@ export default class MentorIntakeForm extends React.Component {
     this.renderEmploymentHistory = this.renderEmploymentHistory.bind(this);
     this.renderCheckBox = this.renderCheckBox.bind(this);
   }
+
+  static contextTypes = {
+    router: React.PropTypes.object,
+  };
 
   handleChange(event) {
     const target = event.target;
@@ -46,6 +51,33 @@ export default class MentorIntakeForm extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     console.log(this.state);
+    const { firstName, lastName, dateOfBirth, phone, email, address } = this.state;
+    const isCurrentlyEmployed = this.state.isCurrentlyEmployed === 'Yes';
+    const isStudent = this.state.isStudent === 'Yes';
+    const hasMentoringExperience = this.state.hasMentoringExperience === 'Yes';
+    const userInfo = { firstName, lastName, dateOfBirth, phone, email, address };
+    const otherFluentLanguages = this.state.fluentLanguages === 'Others' ? this.state.otherFluentLanguages : this.state.fluentLanguages;
+    const { occupation, jobTitle, educationLevel, currentSchool, major, mentoringExperience } = this.state;
+    const toSend = {
+      userInfo,
+      mentorOnly: {
+        isCurrentlyEmployed,
+        isStudent,
+        hasMentoringExperience,
+        otherFluentLanguages,
+        occupation,
+        jobTitle,
+        educationLevel,
+        isStudent,
+        currentSchool,
+        major,
+        mentoringExperience
+      }
+    };
+
+    axios.post('/api/v1/person/profile', toSend).then(() => {
+      this.context.router.push('/profile');
+    });
   }
 
   renderOptions(value) {
@@ -90,26 +122,18 @@ export default class MentorIntakeForm extends React.Component {
         <FormGroup key="name">
           <Label>
             First Name:
-            <Input name="firstname" type="text" value={this.state.firstname} onChange={this.handleChange}/>
+            <Input name="firstName" type="text" value={this.state.firstName} onChange={this.handleChange}/>
           </Label>
           <Label>
             Last Name:
-            <Input name="lastname" type="text" value={this.state.lastname} onChange={this.handleChange}/>
+            <Input name="lastName" type="text" value={this.state.lastName} onChange={this.handleChange}/>
           </Label>
         </FormGroup>
         <Label>
           Date of Birth(Month-Day-Year):
         </Label>
-        <FormGroup key="dob" row style={{marginLeft: 0}}>
-          <Input name="month" className="col-sm-1" type="select" value={this.state.month} onChange={this.handleChange}>
-            {this.getArrayOfConsecutiveInts(12).map(this.renderOptions)}
-          </Input>
-          <Input name="day" className="col-sm-1" type="select" value={this.state.day} onChange={this.handleChange}>
-            {this.getArrayOfConsecutiveInts(31).map(this.renderOptions)}
-          </Input>
-          <Input name="year" className="col-sm-2" type="select" value={this.state.year} onChange={this.handleChange}>
-            {this.getArrayOfConsecutiveInts(70).map(n => 2018 - n).map(this.renderOptions)}
-          </Input>
+        <FormGroup key="dateOfBirth" row style={{marginLeft: 0}}>
+          <Input name="dateOfBirth" type="date" value={this.state.dateOfBirth} onChange={this.handleChange} />
         </FormGroup>
         {this.renderTextInput('Phone Number', 'phone')}
         {this.renderTextInput('Email', 'email')}
