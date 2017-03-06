@@ -9,19 +9,38 @@ export default class MenteeIntakeForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.renderOptions = this.renderOptions.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.getArrayOfConsecutiveInts = this.getArrayOfConsecutiveInts.bind(this);
     this.renderPersonalInformation = this.renderPersonalInformation.bind(this);
     this.renderSelectInput = this.renderSelectInput.bind(this);
-    this.renderSkills = this.renderSkills.bind(this);
+    this.renderGoals = this.renderSkills.bind(this);
+    this.renderCheckBox = this.renderCheckBox.bind(this);
     this.renderEmploymentHistory = this.renderEmploymentHistory.bind(this);
   }
 
   handleChange(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.value;
     const name = target.name;
 
     this.setState({[name]: value});
+  }
+
+  handleCheckboxChange(event) {
+    const target = event.target;
+    const name = target.name;
+
+    this.setState((prevState) => {
+      const newState = prevState;
+      if (target.checked) {
+        newState.goals.push(name);
+        return newState;
+      } else {
+        const ind = newState.goals.indexOf(name);
+        newState.goals = newState.goals.splice(1, ind);
+        return newState;
+      }
+    });
   }
 
   handleSubmit(event) {
@@ -32,6 +51,14 @@ export default class MenteeIntakeForm extends React.Component {
   renderOptions(value) {
     return (
       <option key={value}>{value}</option>
+    );
+  }
+
+  renderCheckBox(displayName, fieldName) {
+    return (
+      <div>
+        <Input type="checkbox" name={fieldName} onChange={this.handleCheckboxChange} />{displayName}
+      </div>
     );
   }
 
@@ -58,6 +85,19 @@ export default class MenteeIntakeForm extends React.Component {
           <Input name={fieldName} type="select" value={this.state[fieldName]} onChange={this.handleChange}>
             {options.map(this.renderOptions)}
           </Input>
+        </Label>
+      </FormGroup>
+    );
+  }
+
+  renderCheckboxInput(displayName, fieldName, fields) {
+    return (
+      <FormGroup key={fieldName}>
+        <Label>
+          {displayName + ':'}
+          {fields.map((field) => {
+            this.renderCheckboxField(fieldName, field);
+          })}
         </Label>
       </FormGroup>
     );
@@ -94,46 +134,26 @@ export default class MenteeIntakeForm extends React.Component {
         {this.renderTextInput('Phone Number', 'phone')}
         {this.renderTextInput('Email', 'email')}
         {this.renderTextInput('Mailing Address', 'address')}
+        {this.renderSelectInput('Program', 'program', ['Bridge', 'Residential Shelter'])}
+        {this.renderTextInput('Case Manager (residential only)', 'caseManager')}
       </div>
     );
   }
 
-  renderSkills() {
+  renderGoals() {
     return (
       <div>
-        <h1>Experience & Skills</h1>
-        {this.renderSelectInput('Are you currently employed?', 'isCurrentlyEmployed', ['Yes', 'No'])}
-        {this.renderTextInput('Occupation', 'occupation')}
-        {this.renderTextInput('Job Title', 'jobTitle')}
-        {this.renderTextInput('Highest level of education:', 'educationLevel')}
-        {this.renderSelectInput('Are you a student?', 'isStudent', ['Yes', 'No'])}
-        {this.renderTextInput('Name of School', 'currentSchool')}
-        {this.renderTextInput('Major', 'major')}
-        {this.renderSelectInput('Do you have any experience mentoring?', 'hasMentoringExperience', ['Yes', 'No'])}
-        {this.renderTextInput('If so, please describe', 'mentoringExperience')}
-        {this.renderSelectInput('Are you fluent in any language other than English?', 'fluentLanguages', [
-          'Spanish',
-          'Chinese',
-          'Tagalog',
-          'Viatnamese',
-          'Korean',
-          'Farsi Persian',
-          'Armenian',
-          'Russian',
-          'Arabic',
-          'Khmer',
-          'Cambodian',
-          'Others',
-        ])}
-        {this.renderTextInput('If you chose others, please specify', 'otherFluentLanguages')}
-      </div>
-    );
-  }
-
-  renderEmploymentHistory() {
-    return (
-      <div>
-        <h3>Which of the following topics do you feel qualified to offer Raphael House scholars support with?</h3>
+        <h1>Goals</h1>
+        <h3>Please indicate the reasons that you are seeking Career Development Services</h3>
+        {this.renderCheckBox('Acquire full-time employment', 'full-time')}
+        {this.renderCheckBox('Acquire part-time employment', 'part-time')}
+        {this.renderCheckBox('Increase income/hours', 'income')}
+        {this.renderCheckBox('Change career path', 'career')}
+        {this.renderCheckBox('Enroll in 2 or 4 year University Program', 'enroll-university')}
+        {this.renderCheckBox('Enroll in technical degree or certification program', 'enroll-technical')}
+        {this.renderCheckBox('Overcome barrier to employment (Acquire GED, computer skills, English tutoring, interview skills, professional attire, resume building, criminal record expungement, improving credit)', 'barrier')}
+        {this.renderCheckBox('Other (please specify)', 'other')}
+        {this.renderTextInput('If you chose other, please specify', 'other')}
       </div>
     );
   }
@@ -144,8 +164,7 @@ export default class MenteeIntakeForm extends React.Component {
         <h1>Personal Information</h1>
         <Form onSubmit={this.handleSubmit}>
           {this.renderPersonalInformation()}
-          {this.renderSkills()}
-          {this.renderEmploymentHistory()}
+          {this.renderGoals()}
         </Form>
       </div>
     );
